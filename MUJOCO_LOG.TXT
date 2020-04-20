@@ -1,0 +1,9 @@
+Wed Apr  8 18:08:22 2020
+ERROR: GLEW initalization error: Missing GL version
+
+Mon Apr 20 20:47:35 2020
+ERROR: Could not open activation key file mjkey.txt
+
+Mon Apr 20 20:47:47 2020
+ERROR: Could not open activation key file mjkey.txt
+
