@@ -70,9 +70,9 @@ class MUJOCO(object):
             self.database_name_old = self.database_name
             self.database = RobotDataBase(self.database_name,time_step = self._timestep)
 
-        self.database.joints_angles_rad.append( self._theta)
-        #self.database.joint_angles_vel_rad.append( self.get_actual_control_joints_velocity() )
-        #self.database.joint_torques.append( self.get_actual_control_joints_torque() )
+        self.database.joints_angles_rad.append( self._theta.copy())
+        self.database.joint_angles_vel_rad.append( self._sim.data.qvel)
+        self.database.joint_torques.append( self._sim.data.qacc)
 
         #[tcp_position, tcp_orientation_q] = self.get_actual_tcp_pose()
         #self.database.tcp_position.append(tcp_position)
