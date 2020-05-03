@@ -14,13 +14,13 @@
 
     <!-- Addedto work with the paper code -->
     <actuator>
-        <velocity name="Shoulder_Link_motor" joint="Actuator1" kv="10" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"/>
-        <velocity name="HalfArm1_Link_motor" joint="Actuator2" kv="100" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"/>
-        <velocity name="HalfArm2_Link_motor" joint="Actuator3" kv="10" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"/>
-        <velocity name="ForeArm_Link_motor" joint="Actuator4" kv="50" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"/>
-        <velocity name="SphericalWrist1_Link_motor" joint="Actuator5" kv="5" forcelimited="true" forcerange="-9 9" ctrllimited="true" ctrlrange="-0.8727 0.8727"/>
-        <velocity name="SphericalWrist2_Link_motor" joint="Actuator6" kv="5" forcelimited="true" forcerange="-9 9" ctrllimited="true" ctrlrange="-0.8727 0.8727"/>
-        <velocity name="Bracelet_Link_motor" joint="Actuator7" kv="5" forcelimited="true" forcerange="-9 9" ctrllimited="true" ctrlrange="-0.8727 0.8727"/>
+        <velocity name="Shoulder_Link_motor" joint="Actuator1" kv="10" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"> </velocity>
+        <velocity name="HalfArm1_Link_motor" joint="Actuator2" kv="100" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"> </velocity>
+        <velocity name="HalfArm2_Link_motor" joint="Actuator3" kv="10" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"> </velocity>
+        <velocity name="ForeArm_Link_motor" joint="Actuator4" kv="50" forcelimited="true" forcerange="-39 39" ctrllimited="true" ctrlrange="-0.8727 0.8727"> </velocity>
+        <velocity name="SphericalWrist1_Link_motor" joint="Actuator5" kv="5" forcelimited="true" forcerange="-9 9" ctrllimited="true" ctrlrange="-0.8727 0.8727"> </velocity>
+        <velocity name="SphericalWrist2_Link_motor" joint="Actuator6" kv="5" forcelimited="true" forcerange="-9 9" ctrllimited="true" ctrlrange="-0.8727 0.8727"> </velocity>
+        <velocity name="Bracelet_Link_motor" joint="Actuator7" kv="5" forcelimited="true" forcerange="-9 9" ctrllimited="true" ctrlrange="-0.8727 0.8727"> </velocity>
     </actuator>
 
     <sensor>

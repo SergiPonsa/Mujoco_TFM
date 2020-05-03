@@ -85,30 +85,42 @@ experiment = "Single"
 
 repeats = 20
 folder = "Experiments"
-title = "Inertia_100"
-
+title = "Original_Mujoco_"+str(experiment)
 if (__name__ == "__main__"):
 
     robot = MUJOCO()
     #to don't render and go faster
     robot.visual_inspection =True
-    for iteration in range(repeats):
-        robot.save_database = False
-        robot.step_simulation()
-        robot._sim.reset()
-        robot.step_simulation()
-        robot.save_database = True
+    if (experiment =="Single"):
+        times=7
+    else:
+        times = 1
+    for i in range(times):
 
-        robot.set_experiment(experiment)
-        robot.database_name = "Original_"+str(iteration)
+
+        joint = i
+        if (experiment =="Single"):
+            robot.database_list =[]
+            robot._pid = [PID(),PID(),PID(),PID(),PID(),PID(),PID()]
+            title = "Single"+"_"+str(joint)
+
+        for iteration in range(repeats):
+            robot.save_database = False
+            robot.step_simulation()
+            robot._sim.reset()
+            robot.step_simulation()
+            robot.save_database = True
+
+            robot.set_experiment(experiment)
+            robot.database_name = "Original_"+str(iteration)
+            robot.run_mujoco(joint)
+            folder = "."
+
+        robot.database_name = "Dummy"
         robot.run_mujoco()
-        folder = "."
 
-    robot.database_name = "Dummy"
-    robot.run_mujoco()
 
-    title = "Original_Mujoco_"+str(experiment)
-    numberJoints = 7
-    PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints)
+        numberJoints = 7
+        PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints)
 
-    print("finished")
+        print("finished")

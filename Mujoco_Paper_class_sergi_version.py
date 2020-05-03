@@ -33,6 +33,7 @@ class MUJOCO(object):
 
 
         self._model = load_model_from_path("models-sergi/urdf/JACO3_URDF_V11_Mujoco.xml")
+        #self._model = load_model_from_path("models-sergi/urdf/Gen3Robotiq.xml")
         self._sim = MjSim(self._model)
         self._viewer = MjViewer(self._sim)
         self._sim.model.opt.timestep = self._timestep
@@ -83,14 +84,14 @@ class MUJOCO(object):
 
 
 
-    def run_mujoco(self):
+    def run_mujoco(self,joint = 1):
         self.set_num_steps()
         for simStep in range(self._num_steps):
 
-            self._pid = set_target_thetas(self._num_steps, self._pid,self._experiment,self._simulator,simStep)
+            self._pid = set_target_thetas(self._num_steps, self._pid,self._experiment,self._simulator,simStep,joint)
             self.step_simulation()
-            if simStep % 469 == 0:
-                for jointNum in range(6):
+            if simStep % 500 == 0:
+                for jointNum in range(7):
                     self._theta[jointNum] = self._sim.data.sensordata[jointNum]
                     print(self._theta)
                     self._linearVelocity[jointNum] = self._pid[jointNum].get_velocity(math.degrees(self._theta[jointNum]))/self._convertdeg2rad
