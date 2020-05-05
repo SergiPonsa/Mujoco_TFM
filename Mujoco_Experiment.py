@@ -78,10 +78,11 @@ def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints):
     avg_df.index = data.time
     avg_df.to_excel(folder+"/"+title+"_average.xlsx", sheet_name='Sheet1')
 
-experiment = "Single"
+#experiment = "Single"
 #experiment = "Double"
 #experiment = "Sergi"
 #experiment = "Cube"
+experiment = "Training1"
 
 repeats = 20
 folder = "Experiments"
