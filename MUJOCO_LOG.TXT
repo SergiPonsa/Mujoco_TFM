@@ -7,3 +7,12 @@ ERROR: Could not open activation key file mjkey.txt
 Mon Apr 20 20:47:47 2020
 ERROR: Could not open activation key file mjkey.txt
 
+Mon May 11 12:37:26 2020
+ERROR: Expired activation key
+
+Mon May 11 13:08:08 2020
+ERROR: Expired activation key
+
+Mon May 18 20:30:26 2020
+ERROR: Expired activation key
+
