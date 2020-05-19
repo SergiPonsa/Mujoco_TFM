@@ -60,6 +60,7 @@ class MUJOCO(object):
         """Step simulation method"""
         self._sim.step()
         if self.visual_inspection:
+            #print("I render")
             self._viewer.render()
             time.sleep(self._timestep)
 
@@ -76,7 +77,14 @@ class MUJOCO(object):
             self.database_name_old = self.database_name
             self.database = RobotDataBase(self.database_name,time_step = self._timestep)
 
-        self.database.joints_angles_rad.append( self._theta.copy())
+        #self.database.joints_angles_rad.append( self._theta.copy())
+        self.database.joints_angles_rad.append( [self._sim.data.sensordata[0],\
+                                                self._sim.data.sensordata[1],\
+                                                self._sim.data.sensordata[2],\
+                                                self._sim.data.sensordata[3],\
+                                                self._sim.data.sensordata[4],\
+                                                self._sim.data.sensordata[5],\
+                                                self._sim.data.sensordata[6] ] )
         self.database.joint_angles_vel_rad.append( self._sim.data.qvel)
         self.database.joint_torques.append( self._sim.data.qacc)
 
@@ -118,8 +126,11 @@ class MUJOCO(object):
         #self._sim.data.set_mocap_quat('robot1:mocap', gripper_rotation)
         self._sim.data.set_mocap_pos('mocap', gripper_target)
         self._sim.data.set_mocap_quat('mocap', gripper_rotation)
-        for _ in range(10):
-            self._sim.step()
+        for k in range(10):
+            print(k)
+            self.step_simulation()
+            #self._sim.step()
+            time.sleep(1.0)
             print(self._sim.data.qpos)
 
         # Extract information for sampling goals.
@@ -222,5 +233,7 @@ class MUJOCO(object):
             quat_delta = action[:, 3:]
 
             self.reset_mocap2body_xpos()
+            print("Hi")
             self._sim.data.mocap_pos[:] = self._sim.data.mocap_pos + pos_delta
             self._sim.data.mocap_quat[:] = self._sim.data.mocap_quat + quat_delta
+            print("bye")

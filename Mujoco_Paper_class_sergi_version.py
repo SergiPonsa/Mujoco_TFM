@@ -11,7 +11,7 @@ import time
 import csv
 import math
 import sys
-import pybullet as p
+#import pybullet as p
 sys.path.insert(1,"../Simulation_Pybullet/")
 from PID import *
 from Rotations import *
@@ -73,15 +73,26 @@ class MUJOCO(object):
             self.database = RobotDataBase(self.database_name,time_step = self._timestep)
 
         self.database.joints_angles_rad.append( self._theta.copy())
+        """
+        self.database.joints_angles_rad.append( [self._sim.data.sensordata[0],\
+                                                self._sim.data.sensordata[1],\
+                                                self._sim.data.sensordata[2],\
+                                                self._sim.data.sensordata[3],\
+                                                self._sim.data.sensordata[4],\
+                                                self._sim.data.sensordata[5],\
+                                                self._sim.data.sensordata[6])
+        """
         self.database.joint_angles_vel_rad.append( self._sim.data.qvel)
         self.database.joint_torques.append( self._sim.data.qacc)
 
         #[tcp_position, tcp_orientation_q] = self.get_actual_tcp_pose()
+        """
         print(self._sim.sensordata[7])
         print(self._sim.sensordata[8])
         self.database.tcp_position.append(self._sim.sensordata[7])
         self.database.tcp_orientation_q.append(self._sim.sensordata[8])
         self.database.tcp_orientation_e.append(p.getEulerFromQuaternion(self._sim.sensordata[8]))
+        """
         self.database.save_time()
 
     def run_mujoco(self,joint = 1):

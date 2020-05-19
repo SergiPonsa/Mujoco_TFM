@@ -38,7 +38,7 @@ def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints):
             column_name = "joint"+str(i)
 
             aux_df[column_name] = joint_angles [:,i]
-        aux_df.index = np.arange(0,0.0001*100,0.0001)
+        aux_df.index = np.arange(0,0.0001*joint_angles.shape[0],0.0001)
         dataframe_list.append(aux_df)
 
     #create and excel with all the experiments
@@ -75,7 +75,7 @@ def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints):
         column_name = "joint"+str(i)
 
         avg_df[column_name] = joint_angles_average [:,i]
-    avg_df.index = np.arange(0,0.0001*100,0.0001)
+    avg_df.index = np.arange(0,0.0001*joint_angles_average.shape[0],0.0001)
     avg_df.to_excel(folder+"/"+title+"_average.xlsx", sheet_name='Sheet1')
 
 
@@ -83,25 +83,29 @@ def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints):
 if (__name__ == "__main__"):
 
     robot = MUJOCO()
+    robot.save_database = False
     Exp_Traj = np.load("acs.npy")
     Num = 19
     Exp_actions = Exp_Traj[Num,:,:]
     #to don't render and go faster
-    robot.visual_inspection =True
+
     #already set in the _env_setup
     #initial_qpos = [1.12810781, -0.59798289, -0.53003607]
 
     robot._env_setup()
+    robot.visual_inspection =True
     robot.save_database = True
-    robot.database_name = "Rishabh"
     for i in range(Exp_actions.shape[0]):
         print(i)
         actions = Exp_actions[i,:]
         robot._set_action(actions)
+        for j in range(10**3):
+            robot.step_simulation()
 
     robot.database_name = "Dummy"
     robot.step_simulation()
 
+    print(robot.database_list)
     PassRobotDatabaseClass_2_excel_jointpos(robot,".","test",7)
 
     print("finished")
