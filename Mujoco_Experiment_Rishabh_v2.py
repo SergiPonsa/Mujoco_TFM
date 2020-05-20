@@ -1,5 +1,5 @@
 
-from Mujoco_Paper_class_sergi_version_Rishabh import MUJOCO
+from Mujoco_Paper_class_sergi_version_Rishabh_v2 import MUJOCO
 import numpy as np
 import pandas as pd
 import sys
@@ -8,7 +8,7 @@ from Rotations import *
 
 
 
-def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints):
+def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints,n_substeps=20):
     dataframe_list = []
     angles_list = []
 
@@ -38,7 +38,7 @@ def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints):
             column_name = "joint"+str(i)
 
             aux_df[column_name] = joint_angles [:,i]
-        aux_df.index = np.arange(0,0.0001*joint_angles.shape[0],0.0001)
+        aux_df.index = np.arange(0,0.0001*joint_angles.shape[0]*n_substeps,0.0001*n_substeps)
         dataframe_list.append(aux_df)
 
     #create and excel with all the experiments
@@ -75,10 +75,10 @@ def PassRobotDatabaseClass_2_excel_jointpos(robot,folder,title,numberJoints):
         column_name = "joint"+str(i)
 
         avg_df[column_name] = joint_angles_average [:,i]
-    avg_df.index = np.arange(0,0.0001*joint_angles_average.shape[0],0.0001)
+    avg_df.index = np.arange(0,0.0001*joint_angles_average.shape[0]*n_substeps,0.0001*n_substeps)
     avg_df.to_excel(folder+"/"+title+"_average.xlsx", sheet_name='Sheet1')
 
-def PassRobotDatabaseClass_2_excel_tcppos(robot,folder,title):
+def PassRobotDatabaseClass_2_excel_tcppos(robot,folder,title,n_substeps=20):
     dataframe_list = []
     tcp_list = []
 
@@ -101,7 +101,7 @@ def PassRobotDatabaseClass_2_excel_tcppos(robot,folder,title):
             column_name = "pos"+str(i)
 
             aux_df[column_name] = tcp_poses [:,i]
-        aux_df.index = np.arange(0,0.0001*tcp_poses.shape[0],0.0001)
+        aux_df.index = np.arange(0,0.0001*tcp_poses.shape[0]*n_substeps,0.0001*n_substeps)
         dataframe_list.append(aux_df)
 
     #create and excel with all the experiments
@@ -134,11 +134,15 @@ def PassRobotDatabaseClass_2_excel_tcppos(robot,folder,title):
     avg_df = pd.DataFrame({})
 
     tcp_poses_average = np.array(average_steps)
-    for i in range(3):
+    for i in range(7):
         column_name = "pos"+str(i)
 
         avg_df[column_name] = tcp_poses_average [:,i]
-    avg_df.index = np.arange(0,0.0001*tcp_poses_average.shape[0],0.0001)
+    #avg_df["rx"] = [1.5707963267948966]*tcp_poses_array.shape[0]
+    #avg_df["ry"] = [-0.0]*tcp_poses_array.shape[0]
+    #avg_df["rz"] = [3.141592653589793]*tcp_poses_array.shape[0]
+
+    avg_df.index = np.arange(0,0.0001*tcp_poses_average.shape[0]*n_substeps,0.0001*n_substeps)
     avg_df.to_excel(folder+"/"+title+"_average.xlsx", sheet_name='Sheet1')
 
 
@@ -148,19 +152,19 @@ if (__name__ == "__main__"):
     robot = MUJOCO()
     robot.save_database = False
     Exp_Traj = np.load("acs.npy")
-    Num = 19
+    Num = 99
     Exp_actions = Exp_Traj[Num,:,:]
     #to don't render and go faster
 
     #already set in the _env_setup
     initial_qpos = {
-            'Actuator1': 0.0,
-            'Actuator2': 0.0,
-            'Actuator3': 0.0,
-            'Actuator4': 0.0,
-            'Actuator5': 0.0,
-            'Actuator6': 0.0,
-            'Actuator7': 0.0,
+            'robot1:Actuator1': 0.0,
+            'robot1:Actuator2': 0.0,
+            'robot1:Actuator3': 0.0,
+            'robot1:Actuator4': 0.0,
+            'robot1:Actuator5': 0.0,
+            'robot1:Actuator6': 0.0,
+            'robot1:Actuator7': 0.0,
         }
 
     robot._env_setup(initial_qpos)
@@ -170,14 +174,14 @@ if (__name__ == "__main__"):
         print(i)
         actions = Exp_actions[i,:]
         robot._set_action(actions)
-        for j in range(10**3):
-            robot.step_simulation()
+        #for j in range(20*10):
+            #robot.step_simulation()
 
     robot.database_name = "Dummy"
     robot.step_simulation()
 
     print(robot.database_list)
-    PassRobotDatabaseClass_2_excel_jointpos(robot,".","test",7)
-    PassRobotDatabaseClass_2_excel_tcppos(robot,".","test_tcp")
+    PassRobotDatabaseClass_2_excel_jointpos(robot,".","test_"+str(Num),7)
+    PassRobotDatabaseClass_2_excel_tcppos(robot,".","test_tcp_"+str(Num))
 
     print("finished")

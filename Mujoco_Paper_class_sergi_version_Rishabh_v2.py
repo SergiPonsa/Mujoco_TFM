@@ -20,7 +20,7 @@ from RobotDataBaseClass import RobotDataBase
 sys.path.insert(1,".")
 
 class MUJOCO(object):
-    def __init__(self,save_database = True ,visual_inspection = True):
+    def __init__(self,save_database = True ,visual_inspection = True, n_substeps=20,gripper_extra_height=0.2):
         self._pid = [PID(),PID(),PID(),PID(),PID(),PID(),PID()]
         self._linearVelocity = [0,0,0,0,0,0,0,0,0]
         self._theta = [0,0,0,0,0,0,0,0,0]
@@ -35,8 +35,8 @@ class MUJOCO(object):
 
 
         #self._model = load_model_from_path("models-sergi/urdf/JACO3_URDF_V11_Mujoco.xml")
-        self._model = load_model_from_path("models/Gen3Robotiq.xml")
-        self._sim = MjSim(self._model)
+        self._model = load_model_from_path("models_rishabh/randomizedgen3.xml")
+        self._sim = MjSim(self._model,nsubsteps=n_substeps)
         self._viewer = MjViewer(self._sim)
         self._sim.model.opt.timestep = self._timestep
 
@@ -48,7 +48,7 @@ class MUJOCO(object):
         self.visual_inspection = visual_inspection
 
         #Data for Rishabh
-        self.gripper_extra_height = 0.0
+        self.gripper_extra_height = gripper_extra_height
 
     def set_experiment(self,experiment):
         self._experiment = experiment
@@ -90,7 +90,9 @@ class MUJOCO(object):
 
         #print(self._sim.sensordata[7])
         #print(self._sim.sensordata[8])
-        self.database.tcp_position.append([self._sim.data.sensordata[7],self._sim.data.sensordata[8],self._sim.data.sensordata[9]])
+        self.database.tcp_position.append([self._sim.data.sensordata[7],self._sim.data.sensordata[8],self._sim.data.sensordata[9],\
+                                            self._sim.data.sensordata[10],self._sim.data.sensordata[11],self._sim.data.sensordata[12],self._sim.data.sensordata[13]\
+                                            ])
         #self.database.tcp_orientation_q.append(self._sim.sensordata[8])
         #self.database.tcp_orientation_e.append(p.getEulerFromQuaternion(self._sim.sensordata[8]))
         #self.database.save_time()
@@ -123,8 +125,8 @@ class MUJOCO(object):
         gripper_rotation = np.array([1., 0., 1., 0.])
         #self._sim.data.set_mocap_pos('robot1:mocap', gripper_target)
         #self._sim.data.set_mocap_quat('robot1:mocap', gripper_rotation)
-        self._sim.data.set_mocap_pos('mocap', gripper_target)
-        self._sim.data.set_mocap_quat('mocap', gripper_rotation)
+        self._sim.data.set_mocap_pos('robot1:mocap', gripper_target)
+        self._sim.data.set_mocap_quat('robot1:mocap', gripper_rotation)
         for k in range(10):
             print(k)
             self.step_simulation()
@@ -154,7 +156,9 @@ class MUJOCO(object):
         pos_ctrl, gripper_ctrl = action[:3], action[3]
 
         pos_ctrl *= 0.05  # limit maximum change in position
-        rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion
+        pos_ctrl *= 0.05  # limit maximum change in position
+        rot_ctrl = [0., 1., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion {Vertical}
+        #rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion {Horizontal}
         gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
         assert gripper_ctrl.shape == (2,)
         #if self.block_gripper:
@@ -210,7 +214,7 @@ class MUJOCO(object):
                 mocap_id = self._sim.model.body_mocapid[obj2_id]
                 body_idx = obj1_id
 
-            assert (mocap_id != -1)
+            # assert (mocap_id != -1)
             self._sim.data.mocap_pos[mocap_id][:] = self._sim.data.body_xpos[body_idx]
             self._sim.data.mocap_quat[mocap_id][:] = self._sim.data.body_xquat[body_idx]
 
@@ -236,3 +240,20 @@ class MUJOCO(object):
             self._sim.data.mocap_pos[:] = self._sim.data.mocap_pos + pos_delta
             self._sim.data.mocap_quat[:] = self._sim.data.mocap_quat + quat_delta
             print("bye")
+
+    """
+    def step(self, action):
+        action = np.clip(action, self.action_space.low, self.action_space.high)
+        self._set_action(action)
+        self.sim.step()
+        self._step_callback()
+        obs = self._get_obs()
+
+        done = False
+        info = {
+            'is_success': self._is_success(obs['achieved_goal'], self.goal),
+        }
+        reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
+        #print("REWARD", reward ," and IS SUCCESS ", info['is_success'])
+        return obs, reward, done, info
+    """
