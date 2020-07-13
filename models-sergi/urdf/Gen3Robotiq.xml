@@ -31,7 +31,7 @@
 			<jointpos joint='Actuator5'/>
 			<jointpos joint='Actuator6'/>
 			<jointpos joint='Actuator7'/>
-			<framepos objtype="xbody" objname="Bracelet_Link">
+			<!-- <framepos objtype="xbody" objname="Bracelet_Link"> -->
 	</sensor>
 
 	<worldbody>
