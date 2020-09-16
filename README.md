@@ -1,3 +1,4 @@
+# Repository copied from vincentzhang by Sergi Ponsà Cobas and modified to apply his Master Thesis
 # gen3-mujoco
 Mujoco model of the Kinova Gen3 robot
 
